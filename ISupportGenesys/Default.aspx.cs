@@ -23,7 +23,7 @@ namespace ISupportGenesys
             SignedRequestStatus = CheckSignedRequest(Request.Form["signed_request"]);
             if (root == null)
             {
-                UserName = "root is null";
+                UserName = "The root is null";
             }
             else
             {
