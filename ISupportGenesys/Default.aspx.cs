@@ -16,7 +16,7 @@ public partial class _Default : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         Greeting = "Hello Genesys!";
-        fullRequest = Request.ToString();
+        fullRequest = Request.RawUrl;
         signedRequest = Request.Params["signed_request"];
 
         SignedRequestStatus = CheckSignedRequest(Request.Form["signed_request"]);
