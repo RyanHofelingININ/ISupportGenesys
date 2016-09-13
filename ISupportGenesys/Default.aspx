@@ -18,5 +18,9 @@
             <%= signedRequest %>
         </div>
     </form>
+
+    <div style="border:solid 1px gray; width: 100%;">
+        <%= fullRequest %>
+    </div>
 </body>
 </html>
