@@ -4,31 +4,36 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <script src="Scripts/jquery-3.1.0.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
     <link href="css/ISupportGenesys.css" rel="stylesheet" />
     <title>ISupport Genesys</title>
     <style>
         
-        table, th, tr, td {border: solid 1px black; border-collapse:collapse;}
-        #topTable th {text-align:left;}
     </style>
 
 </head>
 
 
 <body>
-    <form id="form1" runat="server">
-        <table id="topTable" style="width:50%">
-            <tr>
-                <th style="width:100px;">User:</th>
-                <td><%=UserName %></td>
-            </tr>
-            <tr>
-                <th>Account:</th>
-                <td><%=accountName %></td>
-            </tr>
-        </table>
-        
-    </form>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                User:
+            </div>
+            <div class="col-lg-8">
+                <%= UserName  %>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                Account:
+            </div>
+            <div class="col-lg-8">
+                <%= accountName %>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
