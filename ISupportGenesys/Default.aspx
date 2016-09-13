@@ -6,6 +6,10 @@
 <head runat="server">
     <link href="css/ISupportGenesys.css" rel="stylesheet" />
     <title>ISupport Genesys</title>
+    <style>
+        table, th, tr, td {border: solid 1px black; border-collapse:collapse;}
+    </style>
+
 </head>
 
 
