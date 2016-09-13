@@ -23,14 +23,6 @@
                 <td><%=UserName %></td>
             </tr>
             <tr>
-                <th style="width:100px;">User ID:</th>
-                <td><%=root.context.user.userId %></td>
-            </tr>
-            <tr>
-                <th style="width:100px;">Profile ID:</th>
-                <td><%=root.context.user.profileId %></td>
-            </tr>
-            <tr>
                 <th>Account:</th>
                 <td><%=accountName %></td>
             </tr>
