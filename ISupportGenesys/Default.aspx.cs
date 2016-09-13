@@ -17,7 +17,7 @@ public partial class _Default : System.Web.UI.Page
     public string Greeting = string.Empty;
     public string signedRequest;
     public string fullRequest;
-    private RootObject root;
+    public RootObject root;
     protected void Page_Load(object sender, EventArgs e)
     {
         Greeting = "Hello Genesys!";

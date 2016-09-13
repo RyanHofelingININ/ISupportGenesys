@@ -7,7 +7,9 @@
     <link href="css/ISupportGenesys.css" rel="stylesheet" />
     <title>ISupport Genesys</title>
     <style>
+        
         table, th, tr, td {border: solid 1px black; border-collapse:collapse;}
+        #topTable th {text-align:left;}
     </style>
 
 </head>
@@ -15,10 +17,18 @@
 
 <body>
     <form id="form1" runat="server">
-        <table style="width:100%">
+        <table id="topTable" style="width:50%">
             <tr>
                 <th style="width:100px;">User:</th>
                 <td><%=UserName %></td>
+            </tr>
+            <tr>
+                <th style="width:100px;">User ID:</th>
+                <td><%=root.context.user.userId %></td>
+            </tr>
+            <tr>
+                <th style="width:100px;">Profile ID:</th>
+                <td><%=root.context.user.profileId %></td>
             </tr>
             <tr>
                 <th>Account:</th>
