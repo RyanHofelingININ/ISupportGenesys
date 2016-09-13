@@ -47,10 +47,13 @@ public partial class _Default : System.Web.UI.Page
     private string CheckSignedRequest(string encodedSignedRequest)
     {
         log.Add("CheckSignedRequest()");
+        string returnString =string.Empty;
         if (String.IsNullOrEmpty(encodedSignedRequest))
         {
             // Failed because we are not in canvas, so exit early
-            return "Did not find 'signed_request' POSTed in the HttpRequest. Either we are not being called by a SalesForce Canvas, or its associated Connected App isn't configured properly.";
+            returnString = "Did not find 'signed_request' POSTed in the HttpRequest. Either we are not being called by a SalesForce Canvas, or its associated Connected App isn't configured properly.";
+            log.Add(string.Format("--> returnString: {0}", returnString));
+            return returnString;
         }
 
         // Validate the signed request using the consumer secret
@@ -59,11 +62,13 @@ public partial class _Default : System.Web.UI.Page
         if (!auth.IsAuthenticatedCanvasUser)
         {
             // failed because the request is either a forgery or the connected app doesn't match our consumer secret
-            return "SECURITY ALERT: We received a signed request, but it did not match our consumer secret. We should treat this as a forgery and stop processing the request.";
+            returnString = "SECURITY ALERT: We received a signed request, but it did not match our consumer secret. We should treat this as a forgery and stop processing the request.";
+            log.Add(string.Format("--> returnString: {0}", returnString));
+            return returnString;
         }
 
         root = auth.CanvasContextObject;
-        string returnString = String.Format("SUCCESS! Here is the signed request decoded as JSON:\n{0}", auth.CanvasContextJson);
+        returnString = String.Format("SUCCESS! Here is the signed request decoded as JSON:\n{0}", auth.CanvasContextJson);
         log.Add(string.Format("--> returnString: {0}", returnString));
         return returnString;
 
