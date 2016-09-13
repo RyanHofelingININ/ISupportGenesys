@@ -27,11 +27,8 @@
                 <td><%=accountName %></td>
             </tr>
         </table>
-
-
+        
     </form>
-
-
 
 </body>
 </html>
