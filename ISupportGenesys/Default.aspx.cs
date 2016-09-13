@@ -10,11 +10,12 @@ public partial class _Default : System.Web.UI.Page
     public string accountId = string.Empty;
     public string accountName = string.Empty;
     public string Greeting = string.Empty;
+    public string signedRequest;
     private RootObject root;
     protected void Page_Load(object sender, EventArgs e)
     {
         Greeting = "Hello Genesys!";
-        string signedRequest = Request.Params["signed_request"];
+        signedRequest = Request.Params["signed_request"];
 
         SignedRequestStatus = CheckSignedRequest(Request.Form["signed_request"]);
         if (root == null)

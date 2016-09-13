@@ -15,7 +15,7 @@
         <%= Greeting %>
     </div>
         <div>
-            <%= SignedRequestStatus %>
+            <%= signedRequest %>
         </div>
     </form>
 </body>
