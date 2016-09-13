@@ -22,5 +22,10 @@
     <div style="border:solid 1px gray; width: 100%;">
         <%= fullRequest %>
     </div>
+
+
+    <br />
+    Log:
+    <%= String.Join("<br />",log) %>
 </body>
 </html>
