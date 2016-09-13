@@ -11,21 +11,21 @@
 
 <body>
     <form id="form1" runat="server">
-    <div>
-        <%= Greeting %>
-    </div>
-        <div>
-            <%= signedRequest %>
-        </div>
+        <table style="width:100%">
+            <tr>
+                <th style="width:100px;">User:</th>
+                <td><%=UserName %></td>
+            </tr>
+            <tr>
+                <th>Account:</th>
+                <td><%=accountName %></td>
+            </tr>
+        </table>
+
+
     </form>
 
-    <div style="border:solid 1px gray; width: 100%;">
-        <%= fullRequest %>
-    </div>
 
 
-    <br />
-    Log:
-    <%= String.Join("<br />",log) %>
 </body>
 </html>

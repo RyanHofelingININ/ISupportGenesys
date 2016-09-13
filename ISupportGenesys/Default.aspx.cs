@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Configuration;
 using System.Web;
+using SalesForceOAuth;
 
 public partial class _Default : System.Web.UI.Page
 {
-
-    public List<String> log = new List<String>();
+  
     public string SignedRequestStatus;
     public string UserName = string.Empty;
     public string accountId = string.Empty;
@@ -20,7 +20,6 @@ public partial class _Default : System.Web.UI.Page
     private RootObject root;
     protected void Page_Load(object sender, EventArgs e)
     {
-        log.Add("Page_Load()");
         Greeting = "Hello Genesys!";
         
         signedRequest = Request.Params["signed_request"];
@@ -42,17 +41,17 @@ public partial class _Default : System.Web.UI.Page
                 accountName = root.context.environment.parameters["acctName"];
             }
         }
+        
+        
 
     }
     private string CheckSignedRequest(string encodedSignedRequest)
     {
-        log.Add("CheckSignedRequest()");
         string returnString =string.Empty;
         if (String.IsNullOrEmpty(encodedSignedRequest))
         {
             // Failed because we are not in canvas, so exit early
             returnString = "Did not find 'signed_request' POSTed in the HttpRequest. Either we are not being called by a SalesForce Canvas, or its associated Connected App isn't configured properly.";
-            log.Add(string.Format("--> returnString: {0}", returnString));
             return returnString;
         }
 
@@ -63,20 +62,17 @@ public partial class _Default : System.Web.UI.Page
         {
             // failed because the request is either a forgery or the connected app doesn't match our consumer secret
             returnString = "SECURITY ALERT: We received a signed request, but it did not match our consumer secret. We should treat this as a forgery and stop processing the request.";
-            log.Add(string.Format("--> returnString: {0}", returnString));
             return returnString;
         }
 
         root = auth.CanvasContextObject;
         returnString = String.Format("SUCCESS! Here is the signed request decoded as JSON:\n{0}", auth.CanvasContextJson);
-        log.Add(string.Format("--> returnString: {0}", returnString));
         return returnString;
 
     }
 
     private string GetConsumerSecret()
     {
-        log.Add("GetConsumerSecret()");
         // Since the consumer secret shouldn't change often, we'll put it in the Application Cache. You may want cache it differently in a production application.
         string cachedConsumerSecret = (HttpContext.Current.Application["ConsumerSecret"] ?? String.Empty).ToString();
         if (!String.IsNullOrEmpty(cachedConsumerSecret))
