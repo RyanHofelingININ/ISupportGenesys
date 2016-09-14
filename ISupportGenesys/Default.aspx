@@ -51,10 +51,10 @@
             Open Cases<br />
             <font class="<%= strMTTRColor%> LargeFont">
                 <h1 class="NoPadding">
-                    <%= intCodeRed %><br />
+                    <%= intTotalIncidents %><br />
                 </h1>
             </font>
-            Goal: <%= intCodeRedGoal %><br />
+            Goal: <%= intTotalIncidentsGoal %><br />
 
         </div>
     </div>

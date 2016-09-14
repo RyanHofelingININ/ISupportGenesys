@@ -5,7 +5,7 @@ using System.Web;
 using System.Linq;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
-
+using ISupportGenesys.Models;
 using System.Net;
 using System.Text;
 
@@ -13,22 +13,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using Newtonsoft.Json;
-
-class Incident
-{
-    string IncidentID;
-    string Description;
-    string Created;
-    string LastUpdated;
-    string State;
-    string Status;
-    string TimeStatus;
-    string Priority;
-    string IncidentType;
-    string Categorization;
-    string Contact;
-    string Age;
-}
 
 public partial class _Default : System.Web.UI.Page
 {
@@ -48,6 +32,8 @@ public partial class _Default : System.Web.UI.Page
     public float fltMTTRGoal;
     public string strMTTRColor;
     public string strCodeRedColor;
+    public int intTotalIncidents;
+    public int intTotalIncidentsGoal;
 
     public string responseMessage;
     public HttpResponseMessage response;
@@ -139,9 +125,10 @@ public partial class _Default : System.Web.UI.Page
     {
         intCodeRed = 0;
         intCodeRedGoal = 0;
+        intTotalIncidents = 0;
+        intTotalIncidentsGoal = 0;
 
-
-        fltMTTR = 14.2f;
+    fltMTTR = 14.2f;
         fltMTTRGoal = 14.9f;
 
         if (intCodeRed == 0)
@@ -192,33 +179,26 @@ public partial class _Default : System.Web.UI.Page
         try
         {
             HttpWebResponse resp = req.GetResponse() as HttpWebResponse;
-            responseMessage = resp.ToString();
 
-            Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
-            StreamReader readStream = new StreamReader(resp.GetResponseStream(), encode);
-            Char[] read = new Char[256];
-            int count = readStream.Read(read, 0, 64);
-
-            while(count > 0)
+            using (Stream stream = resp.GetResponseStream())
             {
-                String str = new String(read, 0, count);
-                responseMessage = responseMessage + str;
-                count = readStream.Read(read, 0, 64);
+                StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                responseMessage = reader.ReadToEnd();
+                reader.Close();
+            }
+            resp.Close();
+
+            Entities incidents = JsonConvert.DeserializeObject<Entities>(responseMessage);
+            if (incidents.total != 0)
+            {
+                intTotalIncidents = incidents.total;
             }
 
-            //Incident incident = JsonConvert.DeserializeObject<Incident>(responseMessage);
-
-            //string returnedStuff = new StreamReader(resp.GetResponseStream()).ReadToEnd();
-
-            resp.Close();
-            readStream.Close();
-
-        }
+}
         catch(WebException ex)
         {
             if (ex.Response == null || ex.Status != WebExceptionStatus.ProtocolError)
                 throw;
-
            
             responseMessage = ex.Data.ToString();
         }
