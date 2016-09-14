@@ -4,10 +4,34 @@ using System.Configuration;
 using System.Web;
 using System.Linq;
 using System.Collections.Generic;
+using System.Web.UI.WebControls;
+
+using System.Net;
+using System.Text;
+
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.IO;
+using Newtonsoft.Json;
+
+class Incident
+{
+    string IncidentID;
+    string Description;
+    string Created;
+    string LastUpdated;
+    string State;
+    string Status;
+    string TimeStatus;
+    string Priority;
+    string IncidentType;
+    string Categorization;
+    string Contact;
+    string Age;
+}
 
 public partial class _Default : System.Web.UI.Page
 {
-  
     public string SignedRequestStatus;
     public string UserName = string.Empty;
     public string accountId = string.Empty;
@@ -25,11 +49,15 @@ public partial class _Default : System.Web.UI.Page
     public string strMTTRColor;
     public string strCodeRedColor;
 
+    public string responseMessage;
+    public HttpResponseMessage response;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         Greeting = "Hello Genesys!";
 
         SetUpVariables();
+        InitializeAPI();
         
         signedRequest = Request.Params["signed_request"];
 
@@ -138,4 +166,63 @@ public partial class _Default : System.Web.UI.Page
             strMTTRColor = "Red";
         }
     }
+
+    private void InitializeAPI()
+    {
+
+        //"https://ininisisupportapitest.azurewebsites.net/api/v1/incidents?global=true&orgid={{base64encoded-htmlencoded-orgid}}"
+
+        //    Requires 2 headers for auth:
+        //Authorization Basic QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=
+        // X-ININ-ISupport-Authorization Basic aW5pbi50ZXN0MDAxQGdtYWlsLmNvbTptc3lqc202MzQxIQ==
+
+        string URL = "https://ininisisupportapitest.azurewebsites.net/api/v1/incidents";
+        string URLParameters = "?global=true&orgid={{base64encoded-htmlencoded-orgid}}";
+
+        string BasicAuth = "QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=";
+        string BasicISupport = "aW5pbi50ZXN0MDAxQGdtYWlsLmNvbTptc3lqc202MzQxIQ==";
+
+        
+
+        WebRequest req = WebRequest.Create(@"https://ininisisupportapitest.azurewebsites.net/api/v1/incidents?global=true&orgid=KFwkNyU9Qi9GNUU9XltSZ2p7XHYmRw%3D%3D");
+        req.Method = "GET";
+        req.Headers["Authorization"] = "Basic QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=";
+        req.Headers["X-ININ-ISupport-Authorization"] = "Basic aW5pbi50ZXN0MDAxQGdtYWlsLmNvbTptc3lqc202MzQxIQ==";
+        
+        try
+        {
+            HttpWebResponse resp = req.GetResponse() as HttpWebResponse;
+            responseMessage = resp.ToString();
+
+            Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
+            StreamReader readStream = new StreamReader(resp.GetResponseStream(), encode);
+            Char[] read = new Char[256];
+            int count = readStream.Read(read, 0, 64);
+
+            while(count > 0)
+            {
+                String str = new String(read, 0, count);
+                responseMessage = responseMessage + str;
+                count = readStream.Read(read, 0, 64);
+            }
+
+            //Incident incident = JsonConvert.DeserializeObject<Incident>(responseMessage);
+
+            //string returnedStuff = new StreamReader(resp.GetResponseStream()).ReadToEnd();
+
+            resp.Close();
+            readStream.Close();
+
+        }
+        catch(WebException ex)
+        {
+            if (ex.Response == null || ex.Status != WebExceptionStatus.ProtocolError)
+                throw;
+
+           
+            responseMessage = ex.Data.ToString();
+        }
+
+    }
+
 }
