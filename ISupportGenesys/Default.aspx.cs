@@ -1,11 +1,9 @@
 ﻿using SalesForceOAuth;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using System.Configuration;
 using System.Web;
-using SalesForceOAuth;
+using System.Linq;
+using System.Collections.Generic;
 
 public partial class _Default : System.Web.UI.Page
 {
@@ -14,6 +12,7 @@ public partial class _Default : System.Web.UI.Page
     public string UserName = string.Empty;
     public string accountId = string.Empty;
     public string accountName = string.Empty;
+    public string accountBCFId = string.Empty;
     public string Greeting = string.Empty;
     public string signedRequest;
     public string fullRequest;
@@ -50,10 +49,12 @@ public partial class _Default : System.Web.UI.Page
             {
                 accountName = root.context.environment.parameters["acctName"];
             }
-            
+            if (root.context.environment.parameters.ContainsKey("bcfOrgId"))
+            {
+                accountBCFId = root.context.environment.parameters["bcfOrgId"];
+            }
+
         }
-        
-        
 
     }
     private string CheckSignedRequest(string encodedSignedRequest)
