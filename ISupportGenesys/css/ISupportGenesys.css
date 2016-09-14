@@ -1,3 +1,46 @@
-﻿body {
+﻿body 
+{
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.AnalyticsSection
+{
+    display:inline-block;
+    border: 1px black solid; 
+    padding:3px;
+    width:122px;
+    height: 95px;
+    margin-right:10%;
+}
+
+.SelectionWidth
+{
+    width:173px;
+}
+
+.SearchField
+{
+    display:inline-block;
+    border: 1px black solid;
+    background-color:lightgrey;
+}
+
+span#Search
+{
+    margin-top:25px;
+}
+
+.Green
+{
+    color:green;
+}
+.Red
+{
+    color:Red;
+}
+
+.NoPadding
+{
+    padding: 0px;
+    margin: 0px;
 }

@@ -18,9 +18,19 @@ public partial class _Default : System.Web.UI.Page
     public string signedRequest;
     public string fullRequest;
     public RootObject root;
+
+    public int intCodeRed;
+    public int intCodeRedGoal;
+    public float fltMTTR;
+    public float fltMTTRGoal;
+    public string strMTTRColor;
+    public string strCodeRedColor;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         Greeting = "Hello Genesys!";
+
+        SetUpVariables();
         
         signedRequest = Request.Params["signed_request"];
 
@@ -94,5 +104,37 @@ public partial class _Default : System.Web.UI.Page
             HttpContext.Current.Application["ConsumerSecret"] = secret;
         }
         return secret;
+    }
+
+    private void SetUpVariables()
+    {
+        intCodeRed = 0;
+        intCodeRedGoal = 0;
+
+
+        fltMTTR = 14.2f;
+        fltMTTRGoal = 14.9f;
+
+        if (intCodeRed == 0)
+        {
+            strCodeRedColor = "Green";
+        }
+        else
+        {
+            strCodeRedColor = "Red";
+        }
+
+        if (fltMTTR <= fltMTTRGoal - 1)
+        {
+            strMTTRColor = "Green";
+        }
+        else if (fltMTTR <= fltMTTRGoal)
+        {
+            strMTTRColor = "Yellow";
+        }
+        else
+        {
+            strMTTRColor = "Red";
+        }
     }
 }
