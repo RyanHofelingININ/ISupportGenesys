@@ -31,12 +31,14 @@ namespace ISupportGenesys.Models
     public class Organization
     {
         public string id { get; set; }
+        public string sfId { get; set; }
         public string name { get; set; }
     }
 
     public class PrimaryContact
     {
         public string id { get; set; }
+        public string sfId { get; set; }
         public string name { get; set; }
     }
 }

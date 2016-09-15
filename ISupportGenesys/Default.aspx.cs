@@ -164,7 +164,7 @@ public partial class _Default : System.Web.UI.Page
         //Authorization Basic QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=
         // X-ININ-ISupport-Authorization Basic aW5pbi50ZXN0MDAxQGdtYWlsLmNvbTptc3lqc202MzQxIQ==
 
-        string URL = "https://ininisisupportapitest.azurewebsites.net/api/v1/incidents";
+        string URL = "https://incidentinfoapitest.azurewebsites.net/api/v1/incidents";
         string URLParameters = "?global=true&orgid={{base64encoded-htmlencoded-orgid}}";
 
         string BasicAuth = "QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=";
@@ -172,7 +172,7 @@ public partial class _Default : System.Web.UI.Page
 
         
 
-        WebRequest req = WebRequest.Create(@"https://ininisisupportapitest.azurewebsites.net/api/v1/incidents?global=true&orgid=KFwkNyU9Qi9GNUU9XltSZ2p7XHYmRw%3D%3D");
+        WebRequest req = WebRequest.Create(@"https://incidentinfoapitest.azurewebsites.net/api/v1/incidents?global=true&orgid=KFwkNyU9Qi9GNUU9XltSZ2p7XHYmRw%3D%3D");
         req.Method = "GET";
         req.Headers["Authorization"] = "Basic QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=";
         req.Headers["X-ININ-ISupport-Authorization"] = "Basic aW5pbi50ZXN0MDAxQGdtYWlsLmNvbTptc3lqc202MzQxIQ==";
