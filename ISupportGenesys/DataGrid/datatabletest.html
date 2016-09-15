@@ -1,0 +1,58 @@
+<html>
+<link rel="stylesheet" type="text/css" href="jquery.dynatable.css">
+<script src="vendor/jquery-1.7.2.min.js"></script>
+<script src="jquery.dynatable.js"></script>
+
+<table id="my-final-table" class="table">
+  <thead>
+    <th>Url</th>
+    <th>State</th>
+    <th>Status</th>
+    <th>Milestone</th>
+    <th>OrgName</th>
+    <th>PrimaryContactName</th>
+	<th>LastUpdatedDate</th>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+
+<script>
+var jsonData;
+
+(function() {
+	$.getJSON("kohls.json", function(response) {
+		jsonData = response;
+		processTable(jsonData.entities);
+	});
+	
+	function processTable(jsonData){
+		jsonData = flattenJson(jsonData);
+		console.log('JsonData: ' + JSON.stringify(jsonData[0].orgName));
+		var dynatable = $('#my-final-table').dynatable({
+			dataset: {
+			records: jsonData
+			}
+		}).data('dynatable');
+	}
+})();
+
+function flattenJson(data)
+{
+	var index, len;
+	for (index = 0, len = data.length; index < len; ++index) {
+		data[index].url = '<a href="https://isupportweb-t.inin.com/ViewIncident.aspx?id="' + data[index].id + '">' + data[index].id + '</a>';
+		data[index].orgName = data[index].organization.name;
+		data[index].orgId = data[index].organization.id;
+		data[index].primaryContactName = data[index].primaryContact.name;
+		data[index].primaryContactId = data[index].primaryContact.id;
+		data[index].primaryContactId = data[index].primaryContact.id;
+	}
+	return data;
+}
+
+</script>
+
+
+</html>

@@ -37,6 +37,7 @@ public partial class _Default : System.Web.UI.Page
 
     public string responseMessage;
     public HttpResponseMessage response;
+    public Entities incidents;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -188,13 +189,13 @@ public partial class _Default : System.Web.UI.Page
             }
             resp.Close();
 
-            Entities incidents = JsonConvert.DeserializeObject<Entities>(responseMessage);
+            incidents = JsonConvert.DeserializeObject<Entities>(responseMessage);
             if (incidents.total != 0)
             {
                 intTotalIncidents = incidents.total;
             }
-
-}
+            
+        }
         catch(WebException ex)
         {
             if (ex.Response == null || ex.Status != WebExceptionStatus.ProtocolError)
