@@ -384,6 +384,7 @@ public partial class DataGrid : System.Web.UI.Page
         string status = cmbStatus.Text;
         string primaryContactName = cmbContact.Text;
         string createdDateTime = cmbCreatedDate.Text;
+        string priority = cmbPriority.Text;
 
         var tickets =
             from p in rss["entities"]
@@ -422,6 +423,11 @@ public partial class DataGrid : System.Web.UI.Page
         if (createdDateTime != string.Empty)
         {
             tickets = tickets.Where(p => p.createdDateTime == createdDateTime);
+        }
+
+        if (priority != string.Empty)
+        {
+            tickets = tickets.Where(p => p.priority == priority);
         }
 
         gridData = JsonConvert.SerializeObject(tickets);
