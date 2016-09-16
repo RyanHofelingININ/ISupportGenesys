@@ -80,7 +80,6 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="css\ISupportGenesys.css" />
-    <Content Include="DataGrid.aspx" />
     <Content Include="DataGrid\datatabletest.html" />
     <Content Include="DataGrid\jquery.dynatable.css" />
     <Content Include="DataGrid\jquery.dynatable.js" />
@@ -117,13 +116,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataGrid.aspx.cs">
-      <DependentUpon>DataGrid.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="DataGrid.aspx.designer.cs">
-      <DependentUpon>DataGrid.aspx</DependentUpon>
-    </Compile>
+   
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
