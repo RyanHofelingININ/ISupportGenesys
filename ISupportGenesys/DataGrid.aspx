@@ -206,6 +206,7 @@
         var jsonData;
         $(function onLoad() {
             jsonData = <%= gridData%>;
+            console.log(jsonData);
             jsonDataCodeRed = <%= codeRedData%>;
             processTable(jsonData, jsonDataCodeRed);
         });
@@ -230,9 +231,11 @@
 
         function flattenJson(data)
         {
+           // alert('hit');
 	        var index, len;
 	        for (index = 0, len = data.length; index < len; ++index) {
 	            data[index].Link = '<a href="https://isupportweb-t.inin.com/ViewIncident.aspx?id="' + data[index].id + '">' + data[index].id + '</a>';
+	            data[index].primaryContactName = '<a href="https://cs19.salesforce.com/"' + data[index].sfId + '">' + data[index].primaryContactName + '</a>';
 		        //data[index].orgName = data[index].organization.name;
 		        //data[index].orgId = data[index].organization.id;
 		        //data[index].primaryContactName = data[index].primaryContact.name;

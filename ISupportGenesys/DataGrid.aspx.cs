@@ -190,7 +190,7 @@ public partial class DataGrid : System.Web.UI.Page
         //Authorization Basic QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=
         // X-ININ-ISupport-Authorization Basic aW5pbi50ZXN0MDAxQGdtYWlsLmNvbTptc3lqc202MzQxIQ==
 
-        WebRequest req = WebRequest.Create(@"https://ininisisupportapitest.azurewebsites.net/api/v1/incidents?global=true&orgid=KFwkNyU9Qi9GNUU9XltSZ2p7XHYmRw%3D%3D");
+        WebRequest req = WebRequest.Create(@"https://incidentinfoapitest.azurewebsites.net/api/v1/incidents?global=true&orgid=KFwkNyU9Qi9GNUU9XltSZ2p7XHYmRw%3D%3D");
         req.Method = "GET";
         req.Headers["Authorization"] = "Basic QVBJTUFOQUdFTUVOVFVTRVI6ZG9ZMjNLY2Iwb2pSc1l1SXBPaVc=";
         req.Headers["X-ININ-ISupport-Authorization"] = "Basic aW5pbi50ZXN0MDAxQGdtYWlsLmNvbTptc3lqc202MzQxIQ==";
@@ -246,7 +246,8 @@ public partial class DataGrid : System.Web.UI.Page
                 incidentType = (string)p["incidentType"],
                 primaryContactName = (string)p["primaryContact"]["name"],
                 createdDateTime = (string)p["createdDateTime"],
-                problemCategorization = (string)p["problemCategorization"]
+                problemCategorization = (string)p["problemCategorization"],
+                sfId = (string)p["primaryContact"]["sfId"]
             };
 
         var tickets2 = tickets.Where(p => p.priority != "Code Red" || p.priority != "Code Red RCA");
@@ -363,7 +364,8 @@ public partial class DataGrid : System.Web.UI.Page
                 incidentType = (string)p["incidentType"],
                 primaryContactName = (string)p["primaryContact"]["name"],
                 createdDateTime = (DateTime)p["createdDateTime"],
-                problemCategorization = (string)p["problemCategorization"]
+                problemCategorization = (string)p["problemCategorization"],
+                sfId = (string)p["primaryContact"]["sfId"]
             };
 
         if (description != string.Empty)
