@@ -9,7 +9,7 @@
 
 
 
-public partial class DataGrid {
+public partial class _Default {
     
     /// <summary>
     /// OpenTickets control.

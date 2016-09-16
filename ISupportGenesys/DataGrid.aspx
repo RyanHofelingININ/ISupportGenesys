@@ -136,21 +136,13 @@
             </table>
         </div>
     </form>
-
-    <!-- All Open Tickets -->
-    <span id="Tickets">
-        <asp:DataGrid ID="OpenTickets" runat="server" AllowSorting="True">
-
-        </asp:DataGrid>
-    </span>
-    <br /><br />
     
     <% if (intCodeRed > 0)
              { %>
-
+    <label>Code Red Tickets</label>
     <div class="col-md-12" style="border: 1px black solid; padding:3px;">
         <table id="CodeRedTable" class="table">
-            <thead>
+            <thead style="background-color:firebrick !important">
                 <th data-dynatable-column="Link">Link</th>
                 <th>Description</th>
                 <th>CreatedDateTime</th>
@@ -174,8 +166,9 @@
         No Red Tickets!
     <%} %>
 
-     <% if (intNonCodeRed > 0)
+    <% if (intNonCodeRed > 0)
              { %>
+    <label>Tickets</label>
     <div class="col-md-12" style="border: 1px black solid; padding:3px;">
         <table id="my-final-table" class="table">
             <thead>
