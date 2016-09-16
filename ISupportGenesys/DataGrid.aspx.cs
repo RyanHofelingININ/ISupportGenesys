@@ -26,25 +26,32 @@ public partial class DataGrid : System.Web.UI.Page
     public string fullRequest;
     public RootObject root;
 
-    public int intCodeRed;
-    public int intCodeRedGoal;
-    public float fltMTTR;
-    public float fltMTTRGoal;
-    public string strMTTRColor;
-    public string strCodeRedColor;
-    public int intTotalIncidents;
-    public int intTotalIncidentsGoal;
-
-    public string responseMessage { get; set; }
-    public string gridData { get; set; }
-    public HttpResponseMessage response;
-    public Entities incidents;
+    static public int intCodeRed;
+    static public int intNonCodeRed;
+    static public int intCodeRedGoal;
+    static public float intAverageLength;
+    static public float intAverageLengthGoal;
+    static public string strMTTRColor;
+    static public string strOpenCases;
+    static public string strCodeRedColor;
+    static public int intTotalIncidents;
+    static public int intTotalIncidentsGoal;
+    static public string responseMessage { get; set; }
+    static public string gridData { get; set; }
+    static public string codeRedData { get; set; }
+    static public HttpResponseMessage response;
+    static public Entities incidents;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         Greeting = "Hello Genesys!";
-        SetUpVariables();
-        InitializeAPI();
+        //SetUpVariables();
+
+        if(responseMessage == null)
+        {
+            InitializeAPI();
+        }
+        
 
         signedRequest = Request.Params["signed_request"];
 
@@ -69,6 +76,13 @@ public partial class DataGrid : System.Web.UI.Page
                 accountBCFId = root.context.environment.parameters["bcfOrgId"];
             }
 
+        }
+
+        // Hack to get the page to refresh
+        if(cmbCreatedDate.Items.Count == 0)
+        {
+            SetForm();
+            SetUpVariables();
         }
 
     }
@@ -124,13 +138,11 @@ public partial class DataGrid : System.Web.UI.Page
 
     private void SetUpVariables()
     {
-        intCodeRed = 0;
         intCodeRedGoal = 0;
-        intTotalIncidents = 0;
         intTotalIncidentsGoal = 0;
 
-        fltMTTR = 14.2f;
-        fltMTTRGoal = 14.9f;
+        //intAverageLength = 14.2f;
+        intAverageLengthGoal = 14.9f;
 
         if (intCodeRed == 0)
         {
@@ -141,17 +153,31 @@ public partial class DataGrid : System.Web.UI.Page
             strCodeRedColor = "Red";
         }
 
-        if (fltMTTR <= fltMTTRGoal - 1)
+        if (intAverageLength <= intAverageLengthGoal - 1)
         {
             strMTTRColor = "Green";
+
         }
-        else if (fltMTTR <= fltMTTRGoal)
+        else if (intAverageLength <= intAverageLengthGoal)
         {
             strMTTRColor = "Yellow";
         }
         else
         {
             strMTTRColor = "Red";
+        }
+
+        if(intTotalIncidents > 10)
+        {
+            strOpenCases = "Red";
+        }
+        else if(intTotalIncidents > 5)
+        {
+            strOpenCases = "Yellow";
+        }
+        else
+        {
+            strOpenCases = "Green";
         }
     }
 
@@ -182,15 +208,15 @@ public partial class DataGrid : System.Web.UI.Page
             resp.Close();
 
             incidents = JsonConvert.DeserializeObject<Entities>(responseMessage);
+         
             if (incidents.total != 0)
             {
                 intTotalIncidents = incidents.total;
             }
 
             SetGridData();
-
-            test();
-            
+            SetForm();
+            SetUpVariables();
         }
         catch (WebException ex)
         {
@@ -219,103 +245,57 @@ public partial class DataGrid : System.Web.UI.Page
                 priority = (string)p["priority"],
                 incidentType = (string)p["incidentType"],
                 primaryContactName = (string)p["primaryContact"]["name"],
-                createdDateTime = (string)p["createdDateTime"]
+                createdDateTime = (string)p["createdDateTime"],
+                problemCategorization = (string)p["problemCategorization"]
             };
-            
-        gridData = JsonConvert.SerializeObject(tickets);
 
+        var tickets2 = tickets.Where(p => p.priority != "Code Red" || p.priority != "Code Red RCA");
+
+        intNonCodeRed = tickets2.Count();
+
+        gridData = JsonConvert.SerializeObject(tickets2);
+
+        tickets = tickets.Where(p => p.priority == "Code Red" || p.priority == "Code Red RCA");
+
+        intCodeRed = tickets.Count();
+
+        codeRedData = JsonConvert.SerializeObject(tickets);
     }
 
-    private void test()
+    private void SetForm()
     {
-        
-
-        //string json = @"{
-        //  'channel': {
-        //    'title': 'James Newton-King',
-        //    'link': 'http://james.newtonking.com',
-        //    'description': 'James Newton-King\'s blog.',
-        //    'item': [
-        //      {
-        //        'title': 'Json.NET 1.3 + New license + Now on CodePlex',
-        //        'description': 'Annoucing the release of Json.NET 1.3, the MIT license and the source on CodePlex',
-        //        'link': 'http://james.newtonking.com/projects/json-net.aspx',
-        //        'categories': [
-        //          'Json.NET',
-        //          'CodePlex'
-        //        ]
-        //      },
-        //      {
-        //        'title': 'LINQ to JSON beta',
-        //        'description': 'Annoucing LINQ to JSON',
-        //        'link': 'http://james.newtonking.com/projects/json-net.aspx',
-        //        'categories': [
-        //          'Json.NET',
-        //          'LINQ'
-        //        ]
-        //      }
-        //    ]
-        //  }
-        //}";
-        //
-        //JObject rss = JObject.Parse(json);
-        //string rssTitle = (string)rss["channel"]["title"];
-        //// James Newton-King
-        //
-        //var postTitles =
-        //from p in rss["channel"]["item"]
-        //where (string)p["title"] == "LINQ to JSON beta"
-        //select (string)p["title"];
-        //
-        //
-        //
-        //foreach (var item in postTitles)
-        //{
-        //    Console.WriteLine(item);
-        //}
-        //
-        //var categories2 =
-        //    from c in rss["channel"]["item"].SelectMany(i => i["categories"]).Values<string>()
-        //    group c by c
-        //    into g
-        //    orderby g.Count() descending
-        //    select new { Category = g.Key, Count = g.Count() };
-        //
-        //foreach (var c in categories2)
-        //{
-        //    Console.WriteLine(c.Category + " - Count: " + c.Count);
-        //}
-
-        //JObject rss = JObject.Parse(gridData);
-
-        //string title = (string)rss["entities"][0]["id"];
-
-        //rss["entities"][0].Remove();
-
-        //incidents = JsonConvert.DeserializeObject<Entities>(responseMessage);
-        //
-        //for (int i = 0; i < incidents.Incidents.Count; i++)
-        //{
-        //    if (incidents.Incidents[i].status.ToString() != "Waiting Customer Contact")
-        //    {
-        //        incidents.Incidents.RemoveAt(i);
-        //        i = 0;
-        //    }
-        //}
-
-
         JObject rss = JObject.Parse(responseMessage);
 
         var contacts =
             from c in rss["entities"]
-            group c by new
-            {
-                primaryContactName = (string)c["primaryContact"]["name"]
-            }
+            group c by (string)c["primaryContact"]["name"]
             into g
+            orderby g.Key
             select g;
 
-        
+
+        var createdDates = from cd in rss["entities"]
+                           group cd by (DateTime)cd["createdDateTime"]
+                           into g
+                           orderby g.Key
+                           select g;
+
+        intAverageLength = (int)createdDates.Average(g => DateTime.Now.Subtract(g.Key).TotalDays);
+
+       
+
+        // ["lastUpdatedDate"]
+
+        cmbContact.Items.Add(new ListItem("Select **", ""));
+
+        foreach ( var g in contacts)
+        {
+            cmbContact.Items.Add(new ListItem(g.Key, g.Key));
+        }
+        // string testing = JsonConvert.SerializeObject(contacts);
+
+        cmbState.Items.Add(new ListItem("Open", "Open"));
+
         // Add Statuses
         cmbStatus.Items.Add(new ListItem("Select **", ""));
         cmbStatus.Items.Add(new ListItem("Reported", "Reported"));
@@ -344,38 +324,21 @@ public partial class DataGrid : System.Web.UI.Page
         cmbIncident.Items.Add(new ListItem("AcroSoft Support", "AcroSoft Support"));
         cmbIncident.Items.Add(new ListItem("Unknown", "Unknown"));
         
-        cmbCreatedDate.Items.Add(new ListItem("Select **", ""));
-        cmbCreatedDate.Items.Add(new ListItem("Past Day", "Past Day"));
-        cmbCreatedDate.Items.Add(new ListItem("Past Week", "Past Week"));
-        cmbCreatedDate.Items.Add(new ListItem("Past Month", "Past Month"));
-        cmbCreatedDate.Items.Add(new ListItem("Past Year", "Past Year"));
+        cmbCreatedDate.Items.Add(new ListItem("Select **", "0"));
+        cmbCreatedDate.Items.Add(new ListItem("Past Day", "1"));
+        cmbCreatedDate.Items.Add(new ListItem("Past Week", "7"));
+        cmbCreatedDate.Items.Add(new ListItem("Past Month", "30"));
+        cmbCreatedDate.Items.Add(new ListItem("Past Year", "365"));
 
-        cmbLastUpdate.Items.Add(new ListItem("Select **", ""));
-        cmbLastUpdate.Items.Add(new ListItem("Past Day", "Past Day"));
-        cmbLastUpdate.Items.Add(new ListItem("Past Week", "Past Week"));
-        cmbLastUpdate.Items.Add(new ListItem("Past Month", "Past Month"));
-        cmbLastUpdate.Items.Add(new ListItem("Past Year", "Past Year"));
+        cmbLastUpdate.Items.Add(new ListItem("Select **", "0"));
+        cmbLastUpdate.Items.Add(new ListItem("Past Day", "1"));
+        cmbLastUpdate.Items.Add(new ListItem("Past Week", "7"));
+        cmbLastUpdate.Items.Add(new ListItem("Past Month", "30"));
+        cmbLastUpdate.Items.Add(new ListItem("Past Year", "365"));
     }
 
     protected void SearchButton_Click(object sender, EventArgs e)
     {
-        /*
-        incidents = JsonConvert.DeserializeObject<Entities>(responseMessage);
-
-        for(int i = 0; i < incidents.Incidents.Count; i++)
-        {
-            if (incidents.Incidents[i].status.ToString() != "Waiting Customer Contact")
-            {
-                incidents.Incidents.RemoveAt(i);
-                i = 0;
-            } 
-        }
-
-        gridData = JsonConvert.SerializeObject(incidents);
-
-        Page.ClientScript.RegisterStartupScript(GetType(), "key", "onLoad()", true);
-
-        */
         gridData = responseMessage;
         JObject rss = JObject.Parse(gridData);
 
@@ -383,8 +346,10 @@ public partial class DataGrid : System.Web.UI.Page
         string description = txtDescription.Text;
         string status = cmbStatus.Text;
         string primaryContactName = cmbContact.Text;
-        string createdDateTime = cmbCreatedDate.Text;
         string priority = cmbPriority.Text;
+        string problemCategorization = txtCategorization.Text;
+        int lastUpdatedDate = Convert.ToInt32(cmbLastUpdate.SelectedValue);
+        int createddate = Convert.ToInt32(cmbCreatedDate.SelectedValue);
 
         var tickets =
             from p in rss["entities"]
@@ -392,17 +357,18 @@ public partial class DataGrid : System.Web.UI.Page
                 id = (string)p["id"],
                 status = (string)p["status"],
                 description = (string)p["description"],
-                lastUpdatedDate = (string)p["lastUpdatedDate"],
+                lastUpdatedDate = (DateTime)p["lastUpdatedDate"],
                 state = (string)p["state"],
                 priority = (string)p["priority"],
                 incidentType = (string)p["incidentType"],
                 primaryContactName = (string)p["primaryContact"]["name"],
-                createdDateTime = (string)p["createdDateTime"]
+                createdDateTime = (DateTime)p["createdDateTime"],
+                problemCategorization = (string)p["problemCategorization"]
             };
 
         if (description != string.Empty)
         {
-            tickets = tickets.Where(p => p.description == "%"+description+"%");
+            tickets = tickets.Where(p => p.description.Contains(description));
         }
 
         if (id != string.Empty)
@@ -419,10 +385,15 @@ public partial class DataGrid : System.Web.UI.Page
         {
             tickets = tickets.Where(p => p.primaryContactName == primaryContactName);
         }
-
-        if (createdDateTime != string.Empty)
+        
+        if (lastUpdatedDate != 0)
         {
-            tickets = tickets.Where(p => p.createdDateTime == createdDateTime);
+            tickets = tickets.Where(p => DateTime.Now.Subtract(Convert.ToDateTime(p.lastUpdatedDate)).TotalDays <= lastUpdatedDate);
+        }
+
+        if (createddate != 0)
+        {
+            tickets = tickets.Where(p => DateTime.Now.Subtract(Convert.ToDateTime(p.createdDateTime)).TotalDays <= createddate);
         }
 
         if (priority != string.Empty)
@@ -430,12 +401,23 @@ public partial class DataGrid : System.Web.UI.Page
             tickets = tickets.Where(p => p.priority == priority);
         }
 
-        gridData = JsonConvert.SerializeObject(tickets);
+        if (problemCategorization != string.Empty)
+        {
+            tickets = tickets.Where(p => p.problemCategorization.Contains(problemCategorization));
+        }
+
+        var tickets2 = tickets.Where(p => p.priority != "Code Red" || p.priority != "Code Red RCA");
+
+        intNonCodeRed = tickets2.Count();
+
+        gridData = JsonConvert.SerializeObject(tickets2);
+
+        tickets = tickets.Where(p => p.priority == "Code Red" || p.priority == "Code Red RCA");
+
+        intCodeRed = tickets.Count();
+
+        codeRedData = JsonConvert.SerializeObject(tickets);
 
         Page.ClientScript.RegisterStartupScript(GetType(), "key", "onLoad()", true);
-
-
-
-
     }
 }

@@ -39,13 +39,13 @@
     <div class="col-md-4">
         <div class="AnalyticsSection text-center">
 
-            MTTR (Days)<br />
+            Lifespan (Days)<br />
             <font class="<%= strMTTRColor%> LargeFont">
                 <h1 class="NoPadding">
-                    <%= fltMTTR %><br />
+                    <%= intAverageLength %><br />
                 </h1>
             </font>
-            Goal: <%= fltMTTRGoal %><br />
+            Goal: <%= intAverageLengthGoal %><br />
 
         </div>
     </div>
@@ -54,7 +54,7 @@
         <div class="AnalyticsSection text-center">
 
             Open Cases<br />
-            <font class="<%= strMTTRColor%> LargeFont">
+            <font class="<%= strOpenCases%> LargeFont">
                 <h1 class="NoPadding">
                     <%= intTotalIncidents %><br />
                 </h1>
@@ -67,7 +67,7 @@
     <form runat="server">
         New Search:
         <div class="SearchField col-md-12">
-            <table >
+            <table width="100%" >
                 <tr>
                     <td class="text-right">
                         <label>Incident ID:</label>
@@ -144,37 +144,74 @@
         </asp:DataGrid>
     </span>
     <br /><br />
+    
+    <% if (intCodeRed > 0)
+             { %>
 
-    <div  class="col-md-12">
-        <table id="my-final-table" class="table">
+    <div class="col-md-12" style="border: 1px black solid; padding:3px;">
+        <table id="CodeRedTable" class="table">
             <thead>
-                <th>Url</th>
+                <th data-dynatable-column="Link">Link</th>
                 <th>Description</th>
                 <th>CreatedDateTime</th>
                 <th>LastUpdatedDate</th>
                 <th>State</th>
                 <th>Status</th>
+                <th>problemCategorization</th>
+                <th>PrimaryContactName</th>
                 <th>Priority</th>
                 <th>IncidentType</th>
-                <th>PrimaryContactName</th>
-	            
             </thead>
             <tbody>
             </tbody>
         </table>
     </div>
 
+    <% }
+    else
+    { %>
+    <div class="col-md-12" style="padding:3px;">
+        No Red Tickets!
+    <%} %>
+
+     <% if (intNonCodeRed > 0)
+             { %>
+    <div class="col-md-12" style="border: 1px black solid; padding:3px;">
+        <table id="my-final-table" class="table">
+            <thead>
+                <th data-dynatable-column="Link">Link</th>
+                <th>Description</th>
+                <th>CreatedDateTime</th>
+                <th>LastUpdatedDate</th>
+                <th>State</th>
+                <th>Status</th>
+                <th>problemCategorization</th>
+                <th>PrimaryContactName</th>
+                <th>Priority</th>
+                <th>IncidentType</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <% }
+    else
+    { %>
+    <div class="col-md-12" style="padding:3px;">
+       No Tickets!
+    <%} %>
+
     <script>
         var jsonData;
         $(function onLoad() {
             jsonData = <%= gridData%>;
-            processTable(jsonData);
+            jsonDataCodeRed = <%= codeRedData%>;
+            processTable(jsonData, jsonDataCodeRed);
         });
 
-        function processTable(jsonData)
+        function processTable(jsonData, jsonDataCodeRed)
         {
-            console.log(jsonData);
-            jsonData = jsonData;
 		    jsonData = flattenJson(jsonData);
 		    console.log('JsonData: ' + JSON.stringify(jsonData[0].orgName));
 		    var dynatable = $('#my-final-table').dynatable({
@@ -182,19 +219,27 @@
 			    records: jsonData
 			    }
 		    }).data('dynatable');
+
+		    jsonDataCodeRed = flattenJson(jsonDataCodeRed);
+		    dynatable2 = $('#CodeRedTable').dynatable({
+		        dataset: {
+		            records: jsonDataCodeRed
+		        }
+		    }).data('dynatable2');		   
 	    }
 
         function flattenJson(data)
         {
 	        var index, len;
 	        for (index = 0, len = data.length; index < len; ++index) {
-		        data[index].url = '<a href="https://isupportweb-t.inin.com/ViewIncident.aspx?id="' + data[index].id + '">' + data[index].id + '</a>';
+	            data[index].Link = '<a href="https://isupportweb-t.inin.com/ViewIncident.aspx?id="' + data[index].id + '">' + data[index].id + '</a>';
 		        //data[index].orgName = data[index].organization.name;
 		        //data[index].orgId = data[index].organization.id;
 		        //data[index].primaryContactName = data[index].primaryContact.name;
 		        //data[index].primaryContactId = data[index].primaryContact.id;
-		        //data[index].primaryContactId = data[index].primaryContact.id;
+	            //data[index].primaryContactId = data[index].primaryContact.id;
 	        }
+	        console.log(data);
 	        return data;
         }
 
