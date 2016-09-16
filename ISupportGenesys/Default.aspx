@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Debug="true" Inherits="_Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DataGrid.aspx.cs" Debug="true" Inherits="DataGrid" %>
 
 <!DOCTYPE html>
 
@@ -11,6 +11,11 @@
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
     <link href="Content/bootstrap-theme.min.css" rel="stylesheet" />
     <link href="css/ISupportGenesys.css" rel="stylesheet" />
+
+
+    <link rel="stylesheet" type="text/css" href="DataGrid/jquery.dynatable.css">
+    <script src="DataGrid/vendor/jquery-1.7.2.min.js"></script>
+    <script src="DataGrid/jquery.dynatable.js"></script>
 
     <title>ISupport Genesys</title>
 </head>
@@ -34,13 +39,13 @@
     <div class="col-md-4">
         <div class="AnalyticsSection text-center">
 
-            MTTR (Days)<br />
+            Lifespan (Days)<br />
             <font class="<%= strMTTRColor%> LargeFont">
                 <h1 class="NoPadding">
-                    <%= fltMTTR %><br />
+                    <%= intAverageLength %><br />
                 </h1>
             </font>
-            Goal: <%= fltMTTRGoal %><br />
+            Goal: <%= intAverageLengthGoal %><br />
 
         </div>
     </div>
@@ -49,7 +54,7 @@
         <div class="AnalyticsSection text-center">
 
             Open Cases<br />
-            <font class="<%= strMTTRColor%> LargeFont">
+            <font class="<%= strOpenCases%> LargeFont">
                 <h1 class="NoPadding">
                     <%= intTotalIncidents %><br />
                 </h1>
@@ -59,101 +64,78 @@
         </div>
     </div>
 
-    <br /><br />
-    New Search:
-    <div class="SearchField">
-        <table >
-            <tr>
-                <td class="text-right">
-                    <label>Incident ID:</label>
-                    <input class="SelectionWidth" type="text" name="txtIncident" />
-                </td>
+    <form runat="server">
+        New Search:
+        <div class="SearchField col-md-12">
+            <table width="100%" >
+                <tr>
+                    <td class="text-right">
+                        <label>Incident ID:</label>
+                        <asp:TextBox ID="txtIncidentID" runat="server" CssClass="SelectionWidth"></asp:TextBox>
+                    </td>
 
-                <td class="text-right">
-                    <label>State:</label>
-                    <select class="SelectionWidth" name="cmbState" >
-                        <option value="open" > Open </option>
-                        <option value="closed" > Closed </option>
-                    </select>
-                </td>
+                    <td class="text-right">
+                        <label>State:</label>
+                        <asp:DropDownList ID="cmbState" runat="server" CssClass="SelectionWidth"></asp:DropDownList>
+                    </td>
 
-                <td class="text-right">
-                    <label>Contact:</label>
-                    <select class="SelectionWidth" name="cmbState" >
-                        <option value="1" > Todd Petry </option>
-                        <option value="2" > Josh Lyons </option>
-                    </select>
-                </td>
-            </tr>
+                    <td class="text-right">
+                        <label>Contact:</label>
+                        <asp:DropDownList ID="cmbContact" runat="server" CssClass="SelectionWidth"></asp:DropDownList>
+                    </td>
+                </tr>
 
-            <tr>
-                <td class="text-right">
-                    <label>Description:</label>
-                    <input class="SelectionWidth" type="text" name="txtDescription" />
-                </td>
-                <td colspan="2"></td>
-            </tr>
+                <tr>
+                    <td class="text-right">
+                        <label>Description:</label>
+                        <asp:TextBox ID="txtDescription" runat="server" CssClass="SelectionWidth"></asp:TextBox>
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
 
-            <tr>
-                <td class="text-right">
-                    <label>Created Date:</label>
-                        <select class="SelectionWidth" name="cmbCreated" >
-                        <option value="1" > Today </option>
-                        <option value="2" > Yesterday </option>
-                    </select>
-                </td>
+                <tr>
+                    <td class="text-right">
+                        <label>Created Date:</label>
+                        <asp:DropDownList ID="cmbCreatedDate" runat="server" CssClass="SelectionWidth"></asp:DropDownList>
+                    </td>
 
-                <td class="text-right">
-                    <label>Status:</label>
-                    <select class="SelectionWidth" name="cmbStatus" >
-                        <option value="1" > Reported </option>
-                        <option value="2" > Monitoring </option>
-                    </select>
-                </td>
+                    <td class="text-right">
+                        <label>Status:</label>
+                        <asp:DropDownList ID="cmbStatus" runat="server" CssClass="SelectionWidth"></asp:DropDownList>
+                    </td>
 
-                <td class="text-right">
-                    <label>Incident Type:</label>
-                    <select class="SelectionWidth" name="cmbIncident" >
-                        <option value="1" > Customer Support </option>
-                        <option value="2" > Professional Services </option>
-                    </select>
-                </td>
-            </tr>
+                    <td class="text-right">
+                        <label>Incident Type:</label>
+                        <asp:DropDownList ID="cmbIncident" runat="server" CssClass="SelectionWidth"></asp:DropDownList>
+                    </td>
+                </tr>
 
-            <tr>
-                <td class="text-right">
-                    <label>Last Updated:</label>
-                        <select class="SelectionWidth" name="cmbCreated" >
-                        <option value="1" > Today </option>
-                        <option value="2" > Yesterday </option>
-                    </select>
-                </td>
+                <tr>
+                    <td class="text-right">
+                        <label>Last Updated:</label>
+                        <asp:DropDownList ID="cmbLastUpdate" runat="server" CssClass="SelectionWidth"></asp:DropDownList>
+                    </td>
 
-                <td class="text-right">
-                    <label>Priority:</label>
-                    <select class="SelectionWidth" name="cmbPriority" >
-                        <option value="1" > Code Red </option>
-                        <option value="2" > Code Red RCA </option>
-                    </select>
-                </td>
+                    <td class="text-right">
+                        <label>Priority:</label>
+                        <asp:DropDownList ID="cmbPriority" runat="server" CssClass="SelectionWidth"></asp:DropDownList>
+                    </td>
 
-                <td class="text-right">
-                    <label>Categorization: </label>
-                    <select class="SelectionWidth" name="cmbCategorization" >
-                        <option value="1" > Pure Cloud </option>
-                        <option value="2" > Dialer </option>
-                    </select>
-                </td>
-            </tr>
+                    <td class="text-right">
+                        <label>Categorization: </label>
+                        <asp:TextBox ID="txtCategorization" runat="server" CssClass="SelectionWidth"></asp:TextBox>
+                    </td>
+                </tr>
 
-            <tr>
-                <td colspan="3" class="text-right">
-                    <input type="submit" value="Search" name="cmdSearch" />
-                </td>
-            </tr>
-        </table>
-    </div>
-
+                <tr>
+                    <td colspan="3" class="text-right">
+                        <asp:Button ID="SearchButton" runat="server" Text="Search" OnClick="SearchButton_Click" />
+                
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
 
     <!-- All Open Tickets -->
     <span id="Tickets">
@@ -161,6 +143,110 @@
 
         </asp:DataGrid>
     </span>
+    <br /><br />
+    
+    <% if (intCodeRed > 0)
+             { %>
+
+    <div class="col-md-12" style="border: 1px black solid; padding:3px;">
+        <table id="CodeRedTable" class="table">
+            <thead>
+                <th data-dynatable-column="Link">Link</th>
+                <th>Description</th>
+                <th>CreatedDateTime</th>
+                <th>LastUpdatedDate</th>
+                <th>State</th>
+                <th>Status</th>
+                <th>problemCategorization</th>
+                <th>PrimaryContactName</th>
+                <th>Priority</th>
+                <th>IncidentType</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <% }
+    else
+    { %>
+    <div class="col-md-12" style="padding:3px;">
+        No Red Tickets!
+    <%} %>
+
+     <% if (intNonCodeRed > 0)
+             { %>
+    <div class="col-md-12" style="border: 1px black solid; padding:3px;">
+        <table id="my-final-table" class="table">
+            <thead>
+                <th data-dynatable-column="Link">Link</th>
+                <th>Description</th>
+                <th>CreatedDateTime</th>
+                <th>LastUpdatedDate</th>
+                <th>State</th>
+                <th>Status</th>
+                <th>problemCategorization</th>
+                <th>PrimaryContactName</th>
+                <th>Priority</th>
+                <th>IncidentType</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <% }
+    else
+    { %>
+    <div class="col-md-12" style="padding:3px;">
+       No Tickets!
+    <%} %>
+
+    <script>
+        var jsonData;
+        $(function onLoad() {
+            jsonData = <%= gridData%>;
+            console.log(jsonData);
+            jsonDataCodeRed = <%= codeRedData%>;
+            processTable(jsonData, jsonDataCodeRed);
+        });
+
+        function processTable(jsonData, jsonDataCodeRed)
+        {
+		    jsonData = flattenJson(jsonData);
+		    console.log('JsonData: ' + JSON.stringify(jsonData[0].orgName));
+		    var dynatable = $('#my-final-table').dynatable({
+			    dataset: {
+			    records: jsonData
+			    }
+		    }).data('dynatable');
+
+		    jsonDataCodeRed = flattenJson(jsonDataCodeRed);
+		    dynatable2 = $('#CodeRedTable').dynatable({
+		        dataset: {
+		            records: jsonDataCodeRed
+		        }
+		    }).data('dynatable2');		   
+	    }
+
+        function flattenJson(data)
+        {
+           // alert('hit');
+	        var index, len;
+	        for (index = 0, len = data.length; index < len; ++index) {
+	            data[index].Link = '<a href="https://isupportweb-t.inin.com/ViewIncident.aspx?id="' + data[index].id + '">' + data[index].id + '</a>';
+	            data[index].primaryContactName = '<a href="https://cs19.salesforce.com/"' + data[index].sfId + '">' + data[index].primaryContactName + '</a>';
+		        //data[index].orgName = data[index].organization.name;
+		        //data[index].orgId = data[index].organization.id;
+		        //data[index].primaryContactName = data[index].primaryContact.name;
+		        //data[index].primaryContactId = data[index].primaryContact.id;
+	            //data[index].primaryContactId = data[index].primaryContact.id;
+	        }
+	        console.log(data);
+	        return data;
+        }
+
+    </script>
 
 
 </body>
